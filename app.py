@@ -9,15 +9,22 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+def _secret(key):
+    try:
+        return st.secrets[key]
+    except (KeyError, FileNotFoundError):
+        return os.getenv(key)
+
+
 def _connect():
     return snowflake.connector.connect(
-        account=os.getenv("SNOWFLAKE_ACCOUNT"),
-        user=os.getenv("SNOWFLAKE_USER"),
-        password=os.getenv("SNOWFLAKE_PASSWORD"),
-        role=os.getenv("SNOWFLAKE_ROLE"),
-        warehouse=os.getenv("SNOWFLAKE_WAREHOUSE"),
-        database=os.getenv("SNOWFLAKE_DATABASE"),
-        schema=os.getenv("SNOWFLAKE_SCHEMA"),
+        account=_secret("SNOWFLAKE_ACCOUNT"),
+        user=_secret("SNOWFLAKE_USER"),
+        password=_secret("SNOWFLAKE_PASSWORD"),
+        role=_secret("SNOWFLAKE_ROLE"),
+        warehouse=_secret("SNOWFLAKE_WAREHOUSE"),
+        database=_secret("SNOWFLAKE_DATABASE"),
+        schema=_secret("SNOWFLAKE_SCHEMA"),
     )
 
 
